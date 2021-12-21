@@ -6,6 +6,8 @@
       </div>
       <div class="col-auto">
         <span>{{ status }}</span>
+
+        <div class="alert alert-danger" v-if="error">{{ error.message }}</div>
       </div>
     </div>
 
@@ -47,20 +49,25 @@ export default {
       this.error = null;
       this.position = null;
 
-      if(!navigator.geolocation) {
+      if (!navigator.geolocation) {
         this.status = 'Geolocation is not supported by your browser';
       } else {
         this.loading = true;
         this.status = 'Locating…';
-        navigator.geolocation.getCurrentPosition((position) => {
-          this.position = position;
-          this.status = '';
-          this.error = null;
-          this.loading = false;
-        }, error => {
-          this.error = error;
-          this.loading = false;
-        });
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+              this.position = position;
+              this.status = '';
+              this.error = null;
+              this.loading = false;
+            },
+            (error) => {
+              this.status = 'Error';
+              this.error = error;
+              this.loading = false;
+            }
+        );
       }
 
     }
